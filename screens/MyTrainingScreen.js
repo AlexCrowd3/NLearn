@@ -28,7 +28,7 @@ const MyTrainingScreen = ({ onNavigate }) => {
   return (
     <View style={styles.container}>
         <Header setIsOpen={setIsOpen} />
-        <SideMenu isOpen={isOpen} setIsOpen={setIsOpen} />
+        <SideMenu isOpen={isOpen} setIsOpen={setIsOpen} currentRoute="MyTraining"/>
         <Text style={styles.Text}>Окно "Мое обучение"</Text>
         {/* Слой затемнения */}
             {isOpen && (

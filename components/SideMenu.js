@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Animated, StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const SideMenu = ({ isOpen, setIsOpen}) => {
+const SideMenu = ({ isOpen, setIsOpen, currentRoute}) => {
   const navigation = useNavigation(); 
   const slideAnimation = new Animated.Value(0); 
 
@@ -46,29 +46,49 @@ const SideMenu = ({ isOpen, setIsOpen}) => {
           onPress={() => navigation.navigate('Home')} 
           style={styles.menuItem}
         >
-          <Image source={require('../assets/home_icon.png')} style={styles.menuItemIcon} />
-          <Text style={styles.menuItemText}>Главная</Text>
+          <Image  
+          source={
+            currentRoute === 'Home'
+              ? require('../assets/home_icon_active.png')
+              : require('../assets/home_icon.png')
+          }
+          style={ styles.menuItemIcon}/>
+          <Text style={[styles.menuItemText, currentRoute === 'Home' && styles.menuItemTextActive,]}>Главная</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           onPress={() => navigation.navigate('Profile')} 
           style={styles.menuItem}
         >
-          <Image source={require('../assets/profile_icon.png')} style={styles.menuItemIcon} />
-          <Text style={styles.menuItemText}>Профиль</Text>
+          <Image source={
+            currentRoute === 'Profile'
+              ? require('../assets/profile_icon_active.png')
+              : require('../assets/profile_icon.png')
+          }
+          style={styles.menuItemIcon} />
+          <Text style={[styles.menuItemText, currentRoute === 'Profile' && styles.menuItemTextActive,]}>Профиль</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           onPress={() => navigation.navigate('Courses')} 
           style={styles.menuItem}
         >
-          <Image source={require('../assets/kurs_icon.png')} style={styles.menuItemIcon} />
-          <Text style={styles.menuItemText}>Курсы</Text>
+          <Image source={
+            currentRoute === 'Courses'
+              ? require('../assets/kurs_icon_active.png')
+              : require('../assets/kurs_icon.png')
+          }
+          style={styles.menuItemIcon} />
+          <Text style={[styles.menuItemText, currentRoute === 'Courses' && styles.menuItemTextActive,]}>Курсы</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           onPress={() => navigation.navigate('MyTraining')} 
           style={styles.menuItem}
         >
-          <Image source={require('../assets/my_learn_icon.png')} style={styles.menuItemIcon} />
-          <Text style={styles.menuItemText}>Моё обучение</Text>
+          <Image source={
+            currentRoute === 'MyTraining'
+              ? require('../assets/my_learn_icon_active.png')
+              : require('../assets/my_learn_icon.png')
+          } style={styles.menuItemIcon} />
+          <Text style={[styles.menuItemText, currentRoute === 'MyTraining' && styles.menuItemTextActive,]}>Моё обучение</Text>
         </TouchableOpacity>
       </View>
     </Animated.View>
@@ -117,10 +137,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginLeft: 10,
   },
+  menuItemTextActive: {
+    textAlign: 'left',
+    fontFamily: 'Comfortaa-Bold',
+    color: '#A238B1',
+    fontSize: 20,
+    marginLeft: 10,
+  },
   menuItemIcon: {
     height: 24,
     width: 24,
   },
+  
 });
 
 export default SideMenu;

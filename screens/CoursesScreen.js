@@ -28,7 +28,7 @@ const CoursesScreen = ({ onNavigate }) => {
   return (
     <View style={styles.container}>
         <Header setIsOpen={setIsOpen} />
-        <SideMenu isOpen={isOpen} setIsOpen={setIsOpen} />
+        <SideMenu isOpen={isOpen} setIsOpen={setIsOpen} currentRoute="Courses"/>
         <Text style={styles.Text}>Окно "Курсы"</Text>
         {/* Слой затемнения */}
             {isOpen && (

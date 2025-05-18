@@ -28,7 +28,7 @@ const ProfileScreen = ({ onNavigate }) => {
   return (
     <View style={styles.container}>
       <Header setIsOpen={setIsOpen} />
-      <SideMenu isOpen={isOpen} setIsOpen={setIsOpen} />
+      <SideMenu isOpen={isOpen} setIsOpen={setIsOpen} currentRoute="Profile"/>
       
       <View style={styles.topPanel}>
         <View style={styles.avatarPhotoContainer}>

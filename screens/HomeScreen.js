@@ -36,7 +36,7 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <Header setIsOpen={setIsOpen} />
-      <SideMenu isOpen={isOpen} setIsOpen={setIsOpen} />
+      <SideMenu isOpen={isOpen} setIsOpen={setIsOpen} currentRoute="Home"/>
 
       <View style={styles.info}>
         <Text style={styles.text_info}>Ваш последний курс</Text>

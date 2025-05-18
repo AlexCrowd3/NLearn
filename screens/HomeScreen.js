@@ -53,7 +53,7 @@ const HomeScreen = () => {
           </View>
         </View>
       </View>
-
+      <Text style={styles.Title1}>Самый популярный курс</Text>
       {/* Кнопка Python разработка */}
       <Animated.View style={animatedStyle}>
         <TouchableOpacity
@@ -143,6 +143,14 @@ const styles = StyleSheet.create({
     fontFamily: 'Comfortaa-Medium',
     color: '#FFFFFF',
     fontSize: 20,
+  },
+  Title1: {
+    width: 'auto',
+    marginLeft: 30,
+    marginTop: 60,
+    fontFamily: 'Comfortaa-Bold',
+    color: '#FFFFFF',
+    fontSize: 24,
   },
   info: {
     justifyContent: 'space-between',

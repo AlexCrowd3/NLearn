@@ -12,7 +12,7 @@ import Header from '../components/Header';
 import SideMenu from '../components/SideMenu';
 
 const HomeScreen = () => {
-  const navigation = useNavigation(); // ✅ Получаем объект навигации
+  const navigation = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
 
   const scaleValue = useRef(new Animated.Value(1)).current;
@@ -54,7 +54,6 @@ const HomeScreen = () => {
         </View>
       </View>
       <Text style={styles.Title1}>Самый популярный курс</Text>
-      {/* Кнопка Python разработка */}
       <Animated.View style={animatedStyle}>
         <TouchableOpacity
           style={styles.button}
@@ -211,8 +210,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#272727', // Затемнение (полупрозрачный чёрный)
-    zIndex: 99, // Чтобы слой был поверх всего, но ниже меню
+    backgroundColor: '#272727',
+    zIndex: 99,
     opacity: 0.8,
   }
 });

@@ -1,6 +1,5 @@
-// screens/ProfileScreen.js
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Header from '../components/Header';
 import SideMenu from '../components/SideMenu';
@@ -30,7 +29,50 @@ const ProfileScreen = ({ onNavigate }) => {
     <View style={styles.container}>
       <Header setIsOpen={setIsOpen} />
       <SideMenu isOpen={isOpen} setIsOpen={setIsOpen} />
-      <Text>Это второй экран!</Text>
+      
+      <View style={styles.topPanel}>
+        <View style={styles.avatarPhotoContainer}>
+          <Image source={require('../assets/avatar_photo.png')} style={styles.avatarPhoto} />
+        </View>
+        <View style={styles.topPanelContainer}>
+          <Text style={styles.fio}>Иванов Павел Андреевич</Text>
+          <Text style={styles.number}>+7(921)-000-0000</Text>
+          <View style={styles.cupContainer}>
+            <Text style={styles.cupContainerText}>Золото</Text>
+            <Image source={require('../assets/cup_gold_icon.png')} style={styles.cupContainerImage} />
+          </View>
+          <View style={styles.answerContainer}>
+            <Text style={styles.answerContainerPersent}>100%</Text>
+            <Text style={styles.answerContainerText}>Правильных ответов</Text>
+          </View>
+          <View style={styles.CountCoursesContainer}>
+            <Text style={styles.CountCoursesContainerText}>Нет курсов</Text>
+          </View>
+        </View>
+      </View>
+
+      <Text style={styles.TitleCourses}>Мои курсы</Text>
+
+      <View style={styles.CoursesContainer}>
+        <Text  style={styles.CoursesContainerText}>У вас пока что нет активных курсов</Text>
+      </View>
+
+      <Animated.View style={[animatedStyle, styles.buttonCoursesWrapper]}>
+        <TouchableOpacity
+          style={styles.buttonCourses}
+          onPressIn={onPressIn}
+          onPressOut={onPressOut}
+          onPress={() => navigation.navigate('Courses')} 
+          activeOpacity={1}
+        >
+          <Text style={styles.buttonCoursesText}>Выбрать курс</Text>
+          <Image
+            source={require('../assets/book_open_icon.png')}
+            style={styles.buttonCoursesBookLogo}
+          />
+        </TouchableOpacity>
+      </Animated.View>
+
       {/* Слой затемнения */}
         {isOpen && (
         <View style={styles.overlay}/>
@@ -45,14 +87,150 @@ const styles = StyleSheet.create({
     backgroundColor: '#121212',
     overflow: 'hidden',
   },
+  topPanel: {
+    height: 'auto',
+    width: 'auto',
+    marginLeft: 30,
+    marginRight: 30,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  avatarPhotoContainer: {
+    width: '55%',
+    height: 210,
+    borderRadius: 20,
+    padding: 6,
+    borderWidth: 2,
+    borderColor: '#A238B1',
+    borderStyle: 'solid', 
+    marginRight: 10,
+  },
+  avatarPhoto: {
+    height: '100%',
+    width: '100%',
+    borderRadius: 14,
+  },
+  topPanelContainer: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  fio: {
+    color: '#D946EF',
+    fontSize: 16,
+    fontFamily: 'Comfortaa-Medium',
+  },
+  number: {
+    color: '#CDCDCD',
+    fontSize: 16,
+    fontFamily: 'Comfortaa-Medium',
+  },
+  cupContainer: {
+    height: 35,
+    backgroundColor: '#FABE2C',
+    borderRadius: 5,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 16,
+    paddingRight: 7,
+  },
+  cupContainerText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontFamily: 'Comfortaa-Bold',
+  },
+  cupContainerImage: {
+    height: 27,
+    width: 27,
+  },
+  answerContainer: {
+    height: 50,
+    borderRadius: 5,
+    backgroundColor: '#2FD842',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 7,
+    paddingRight: 7,
+  },
+  answerContainerPersent: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontFamily: 'Comfortaa-Bold',
+  },
+  answerContainerText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontFamily: 'Comfortaa-Bold',
+    marginLeft: 10,
+  },
+  CountCoursesContainer: {
+    height: 35,
+    borderRadius: 5,
+    backgroundColor: '#9B87F5',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  CountCoursesContainerText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontFamily: 'Comfortaa-Medium',
+  },
+  TitleCourses: {
+    marginTop: 65,
+    marginLeft: 30,
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontFamily: 'Comfortaa-Bold',
+  },
+  CoursesContainer: {
+    height: '45%',
+    width: 'auto',
+    margin: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  CoursesContainerText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontFamily: 'Comfortaa-Medium',
+    width: '60%',
+    textAlign: 'center',
+  },
+  buttonCourses: {
+    height: 60,
+    backgroundColor: '#A238B1',
+    borderRadius: 20,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingRight: 72,
+    paddingLeft: 72,
+  },
+  buttonCoursesWrapper: {
+    position: 'absolute',
+    bottom: 30,
+    left: 30,
+    right: 30,
+    zIndex: 98,
+  },
+  buttonCoursesText: {
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontFamily: 'Comfortaa-Bold',
+  },
+  buttonCoursesBookLogo: {
+    height: 33,
+    width: 33,
+  },
   overlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#272727', // Затемнение (полупрозрачный чёрный)
-    zIndex: 99, // Чтобы слой был поверх всего, но ниже меню
+    backgroundColor: '#272727', 
+    zIndex: 99, 
     opacity: 0.8,
   }
 });

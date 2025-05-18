@@ -17,7 +17,7 @@ export default function App() {
   }, []);
 
   if (!isFontLoaded) {
-    return null; // Можно показать сплэш-экран
+    return null; 
   }
 
   return (

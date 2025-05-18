@@ -1,4 +1,3 @@
-// components/Header.js
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import SideMenu from './SideMenu';

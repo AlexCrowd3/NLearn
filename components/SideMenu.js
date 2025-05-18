@@ -42,7 +42,6 @@ const SideMenu = ({ isOpen, setIsOpen}) => {
       </TouchableOpacity>
 
       <View style={styles.navBlock}>
-        {/* Элементы меню */}
         <TouchableOpacity 
           onPress={() => navigation.navigate('Home')} 
           style={styles.menuItem}
@@ -57,14 +56,20 @@ const SideMenu = ({ isOpen, setIsOpen}) => {
           <Image source={require('../assets/profile_icon.png')} style={styles.menuItemIcon} />
           <Text style={styles.menuItemText}>Профиль</Text>
         </TouchableOpacity>
-        <View style={styles.menuItem}>
+        <TouchableOpacity 
+          onPress={() => navigation.navigate('Courses')} 
+          style={styles.menuItem}
+        >
           <Image source={require('../assets/kurs_icon.png')} style={styles.menuItemIcon} />
           <Text style={styles.menuItemText}>Курсы</Text>
-        </View>
-        <View style={styles.menuItem}>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          onPress={() => navigation.navigate('MyTraining')} 
+          style={styles.menuItem}
+        >
           <Image source={require('../assets/my_learn_icon.png')} style={styles.menuItemIcon} />
           <Text style={styles.menuItemText}>Моё обучение</Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </Animated.View>
   );

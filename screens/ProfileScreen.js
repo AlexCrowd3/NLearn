@@ -1,15 +1,33 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, Animated, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Header from '../components/Header';
 import SideMenu from '../components/SideMenu';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = ({ onNavigate }) => {
+  const [userData, setUserData] = useState(null);
+  
   const navigation = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
 
   const scaleValue = useRef(new Animated.Value(1)).current;
 
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const data = await AsyncStorage.getItem('userData');
+        if (data) {
+          setUserData(JSON.parse(data));
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки данных:', error);
+      }
+    };
+
+    loadUserData();
+  }, []);
+  
   const onPressIn = () => {
     Animated.spring(scaleValue, {
       toValue: 0.95,
@@ -35,8 +53,7 @@ const ProfileScreen = ({ onNavigate }) => {
           <Image source={require('../assets/avatar_photo.png')} style={styles.avatarPhoto} />
         </View>
         <View style={styles.topPanelContainer}>
-          <Text style={styles.fio}>Иванов Павел Андреевич</Text>
-          <Text style={styles.number}>+7(921)-000-0000</Text>
+          <Text style={styles.fio}>{userData?.lastname ? `${userData.lastname}` : 'Error'} {userData?.name ? ` ${userData.name}` : ''} {userData?.surname ? ` ${userData.surname}` : ''}</Text>
           <View style={styles.cupContainer}>
             <Text style={styles.cupContainerText}>Золото</Text>
             <Image source={require('../assets/cup_gold_icon.png')} style={styles.cupContainerImage} />

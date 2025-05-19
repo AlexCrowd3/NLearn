@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,19 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import Header from '../components/Header';
 import SideMenu from '../components/SideMenu';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = () => {
+  // Для тестирования
+  /*useEffect(() => {
+    const resetData = async () => {
+      await AsyncStorage.removeItem('userData');
+      console.log('Данные пользователя удалены');
+    };
+
+    resetData();
+  }, []);*/
+
   const navigation = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
 

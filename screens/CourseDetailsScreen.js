@@ -149,8 +149,8 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   arrowIcon: {
-    width: 20,
-    height: 20,
+    width: 38,
+    height: 38,
     tintColor: '#FFFFFF',
   },
   moduleContent: {

@@ -95,8 +95,6 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   courseCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
     paddingVertical: 15,
     paddingHorizontal: 25,
     borderRadius: 10,

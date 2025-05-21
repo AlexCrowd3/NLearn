@@ -53,19 +53,22 @@ const ProfileScreen = ({ onNavigate }) => {
           <Image source={require('../assets/avatar_photo.png')} style={styles.avatarPhoto} />
         </View>
         <View style={styles.topPanelContainer}>
-          <Text style={styles.fio}>{userData?.lastname ? `${userData.lastname}` : 'Error'} {userData?.name ? ` ${userData.name}` : ''} {userData?.surname ? ` ${userData.surname}` : ''}</Text>
-          <View style={styles.cupContainer}>
-            <Text style={styles.cupContainerText}>Золото</Text>
-            <Image source={require('../assets/cup_gold_icon.png')} style={styles.cupContainerImage} />
-          </View>
-          <View style={styles.answerContainer}>
-            <Text style={styles.answerContainerPersent}>100%</Text>
-            <Text style={styles.answerContainerText}>Правильных ответов</Text>
-          </View>
-          <View style={styles.CountCoursesContainer}>
-            <Text style={styles.CountCoursesContainerText}>Нет курсов</Text>
-          </View>
+          <Text style={styles.fio}>{userData?.lastname ? `${userData.lastname}` : 'Error'}</Text>
+          <Text style={styles.fio}>{userData?.name ? `${userData.name}` : ''}</Text>
+          <Text style={styles.userInfo}>{userData?.telephone_number ? `${userData.telephone_number}` : ''}</Text>
+          <Text style={styles.userInfo}>{userData?.email ? `${userData.email}` : ''}</Text>
         </View>
+      </View>
+      <View style={styles.cupContainer}>
+        <Text style={styles.cupContainerText}>Золото</Text>
+        <Image source={require('../assets/cup_gold_icon.png')} style={styles.cupContainerImage} />
+      </View>
+      <View style={styles.answerContainer}>
+        <Text style={styles.answerContainerPersent}>100%</Text>
+        <Text style={styles.answerContainerText}>Правильных ответов</Text>
+      </View>
+      <View style={styles.CountCoursesContainer}>
+        <Text style={styles.CountCoursesContainerText}>Нет курсов</Text>
       </View>
 
       <Text style={styles.TitleCourses}>Мои курсы</Text>
@@ -111,6 +114,7 @@ const styles = StyleSheet.create({
     marginRight: 30,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 20,
   },
   avatarPhotoContainer: {
     width: '55%',
@@ -129,85 +133,96 @@ const styles = StyleSheet.create({
   },
   topPanelContainer: {
     flex: 1,
-    justifyContent: 'space-between',
   },
   fio: {
     color: '#D946EF',
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'Comfortaa-Medium',
+    marginBottom: 5,
   },
-  number: {
+  userInfo: {
     color: '#CDCDCD',
     fontSize: 16,
     fontFamily: 'Comfortaa-Medium',
+    marginTop: 10,
   },
   cupContainer: {
-    height: 35,
+    height: 50,
     backgroundColor: '#FABE2C',
-    borderRadius: 5,
+    borderRadius: 10,
     justifyContent: 'space-between',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 16,
-    paddingRight: 7,
+    paddingLeft: '10%',
+    paddingRight: '10%',
+    marginLeft: 30, 
+    marginRight: 30,
+    marginBottom: 20,
   },
   cupContainerText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 20,
     fontFamily: 'Comfortaa-Bold',
   },
   cupContainerImage: {
-    height: 27,
-    width: 27,
+    height: 35,
+    width: 35,
   },
   answerContainer: {
     height: 50,
-    borderRadius: 5,
+    borderRadius: 10,
     backgroundColor: '#2FD842',
     justifyContent: 'space-between',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 7,
-    paddingRight: 7,
+    paddingLeft: '10%',
+    paddingRight: '10%',
+    marginLeft: 30, 
+    marginRight: 30,
+    marginBottom: 20,
   },
   answerContainerPersent: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 20,
     fontFamily: 'Comfortaa-Bold',
   },
   answerContainerText: {
     color: '#FFFFFF',
-    fontSize: 12,
+    fontSize: 16,
     fontFamily: 'Comfortaa-Bold',
     marginLeft: 10,
   },
   CountCoursesContainer: {
-    height: 35,
-    borderRadius: 5,
+    height: 50,
+    borderRadius: 10,
     backgroundColor: '#9B87F5',
     justifyContent: 'center',
     alignItems: 'center',
+    marginLeft: 30, 
+    marginRight: 30,
+    marginBottom: 20,
   },
   CountCoursesContainerText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 20,
     fontFamily: 'Comfortaa-Medium',
   },
   TitleCourses: {
-    marginTop: 65,
+    marginTop: 30,
     marginLeft: 30,
     color: '#FFFFFF',
     fontSize: 24,
     fontFamily: 'Comfortaa-Bold',
   },
   CoursesContainer: {
-    height: '45%',
+    height: 'auto',
     width: 'auto',
     margin: 30,
     justifyContent: 'center',
     alignItems: 'center',
   },
   CoursesContainerText: {
+    marginTop: 20,
     color: '#FFFFFF',
     fontSize: 16,
     fontFamily: 'Comfortaa-Medium',

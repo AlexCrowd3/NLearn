@@ -7,6 +7,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 import CoursesScreen from '../screens/CoursesScreen';
 import MyTrainingScreen from '../screens/MyTrainingScreen';
 import RegistrationScreen from '../screens/RegistrationScreen';
+import CourseDetailsScreen from '../screens/CourseDetailsScreen';
 
 const Stack = createStackNavigator();
 
@@ -18,10 +19,8 @@ const AppNavigator = () => {
       try {
         const storedData = await AsyncStorage.getItem('userData');
         if (storedData) {
-          // Данные есть → домашний экран
           setInitialRoute('Home');
         } else {
-          // Нет данных → регистрация
           setInitialRoute('Registration');
         }
       } catch (error) {
@@ -33,7 +32,7 @@ const AppNavigator = () => {
   }, []);
 
   if (initialRoute === null) {
-    return null; // Ждём загрузки данных
+    return null;
   }
 
   return (
@@ -49,6 +48,7 @@ const AppNavigator = () => {
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Courses" component={CoursesScreen} />
       <Stack.Screen name="MyTraining" component={MyTrainingScreen} />
+      <Stack.Screen name="CourseDetails" component={CourseDetailsScreen} />
     </Stack.Navigator>
   );
 };

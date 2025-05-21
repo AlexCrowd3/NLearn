@@ -5,14 +5,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const RegistrationScreen = ({ navigation }) => {
   const [name, setName] = useState('');
   const [lastname, setLastname] = useState('');
-  const [surname, setSurname] = useState('');
+  const [password, setPassword] = useState('');
   const [telephone_number, setTelephonenumber] = useState('');
+  const [email, setEmail] = useState('');
 
   const [errors, setErrors] = useState({
     name: '',
     lastname: '',
-    surname: '',
+    password: '',
     telephone_number: '',
+    email: '',
   });
 
   const validateInputs = () => {
@@ -29,9 +31,21 @@ const RegistrationScreen = ({ navigation }) => {
       isValid = false;
     }
 
-    if (!surname.trim()) {
-      newErrors.surname = 'Поле "Отчество" не может быть пустым';
+    if (!password.trim()) {
+      newErrors.password = 'Поле "Пароль" не может быть пустым';
       isValid = false;
+    }
+
+    // Проверка email
+    if (!email.trim()) {
+      newErrors.email = 'Поле "Email" не может быть пустым';
+      isValid = false;
+    } else {
+      const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      if (!isValidEmail) {
+        newErrors.email = 'Введите корректный почтовый адрес';
+        isValid = false;
+      }
     }
 
     if (!telephone_number.trim()) {
@@ -49,7 +63,7 @@ const RegistrationScreen = ({ navigation }) => {
   const handleContinue = async () => {
   if (!validateInputs()) return;
   try {
-    await AsyncStorage.setItem('userData', JSON.stringify({ name, lastname, surname, telephone_number }));
+    await AsyncStorage.setItem('userData', JSON.stringify({ name, lastname, password, telephone_number, email, courses: [] }));
     navigation.navigate('Home');
   } catch (e) {
     console.log('Ошибка сохранения данных:', e);
@@ -90,21 +104,6 @@ const RegistrationScreen = ({ navigation }) => {
         {errors.lastname ? <Text style={styles.error}>{errors.lastname}</Text> : null}
       </View>
 
-      {/* Отчество */}
-      <View>
-        <TextInput
-          placeholder="Ваше отчество"
-          value={surname}
-          onChangeText={setSurname}
-          style={[
-            styles.input,
-            errors.surname ? styles.errorInput : styles.inputFocus,
-          ]}
-          placeholderTextColor="#888"
-        />
-        {errors.surname ? <Text style={styles.error}>{errors.surname}</Text> : null}
-      </View>
-
       {/* Телефон */}
       <View>
         <TextInput
@@ -119,6 +118,37 @@ const RegistrationScreen = ({ navigation }) => {
           placeholderTextColor="#888"
         />
         {errors.telephone_number ? <Text style={styles.error}>{errors.telephone_number}</Text> : null}
+      </View>
+
+      {/* Email */}
+      <View>
+        <TextInput
+          placeholder="Ваш Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          style={[
+            styles.input,
+            errors.email ? styles.errorInput : styles.inputFocus,
+          ]}
+          placeholderTextColor="#888"
+        />
+        {errors.email ? <Text style={styles.error}>{errors.email}</Text> : null}
+      </View>
+
+      {/* Пароль */}
+      <View>
+        <TextInput
+          placeholder="Пароль..."
+          value={password}
+          onChangeText={setPassword}
+          style={[
+            styles.input,
+            errors.password ? styles.errorInput : styles.inputFocus,
+          ]}
+          placeholderTextColor="#888"
+        />
+        {errors.password ? <Text style={styles.error}>{errors.password}</Text> : null}
       </View>
 
       <TouchableOpacity style={styles.button} onPress={handleContinue}>

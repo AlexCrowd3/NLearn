@@ -47,7 +47,7 @@ const CourseDetailsScreen = ({ route }) => {
               onPress={() => toggleModule(module.title)}
             >
               <View style={[styles.moduleNumberContainer, { backgroundColor: course.background }]}>
-                <Text style={styles.moduleNumber}>{index + 1}</Text>
+                <Text style={[styles.moduleNumber, {color: course.textColor}]}>{index + 1}</Text>
               </View>
               <Text style={styles.moduleTitle}>{module.title}</Text>
               <Animated.Image

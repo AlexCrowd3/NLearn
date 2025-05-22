@@ -11,10 +11,12 @@ import {
 } from 'react-native';
 
 import images from '../assets/images';
+import { useNavigation } from '@react-navigation/native';
 
 const { height } = Dimensions.get('window');
 
 const CourseDetailsScreen = ({ route }) => {
+  const navigation = useNavigation();
   const { course } = route.params; 
   const [expandedModules, setExpandedModules] = useState({});
 
@@ -29,13 +31,18 @@ const CourseDetailsScreen = ({ route }) => {
     <View style={styles.container}>
       {/* Заголовок курса */}
       <View style={[styles.header, { backgroundColor: course.background }]}>
-        <Text style={[styles.headerTitle, { color: course.textColor }]}>
-          {course.title}
-        </Text>
-        <Image
-          source={images[course.imageKey]}
-          style={styles.logo}
-        />
+        <TouchableOpacity style={[style=styles.buttonExit, { backgroundColor: course.textColor}]} onPress={() => navigation.navigate('Courses')}>
+          <Text style={[styles.buttonExitText, {color: course.background}]}>Назад</Text>
+        </TouchableOpacity>
+        <View style={styles.headerCourse}>
+          <Text style={[styles.headerTitle, { color: course.textColor }]}>
+            {course.title}
+          </Text>
+          <Image
+            source={images[course.imageKey]}
+            style={styles.logo}
+          />
+        </View>
       </View>
 
       {/* Список модулей */}
@@ -98,13 +105,16 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 40,
+    paddingTop: 20,
+    paddingBottom: 40,
     paddingHorizontal: 30,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
+  },
+  headerCourse: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   headerTitle: {
     width: '70%',
@@ -114,6 +124,18 @@ const styles = StyleSheet.create({
   logo: {
     width: 60,
     height: 60,
+  },
+  buttonExit: {
+    marginBottom: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    width: 100,
+  },
+  buttonExitText: {
+    fontSize: 16,
+    fontFamily: 'Comfortaa-Bold',
+    textAlign: 'center',
   },
   scrollContainer: {
     flex: 1,

@@ -147,6 +147,7 @@ const RegistrationScreen = ({ navigation }) => {
             errors.password ? styles.errorInput : styles.inputFocus,
           ]}
           placeholderTextColor="#888"
+          secureTextEntry
         />
         {errors.password ? <Text style={styles.error}>{errors.password}</Text> : null}
       </View>

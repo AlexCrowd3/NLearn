@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Header from '../components/Header';
 import SideMenu from '../components/SideMenu';
@@ -17,8 +18,25 @@ import images from '../assets/images';
 const CoursesScreen = ({ onNavigate }) => {
   const navigation = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
-
+  const [userCourses, setUserCourses] = useState([]);
   const scaleValue = useRef(new Animated.Value(1)).current;
+
+  // Загрузка данных пользователя
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const userDataString = await AsyncStorage.getItem('userData');
+        if (userDataString) {
+          const userData = JSON.parse(userDataString);
+          setUserCourses(userData.courses || []);
+        }
+      } catch (e) {
+        console.log('Ошибка чтения данных:', e);
+      }
+    };
+
+    loadUserData();
+  }, []);
 
   const onPressIn = () => {
     Animated.spring(scaleValue, {
@@ -44,33 +62,60 @@ const CoursesScreen = ({ onNavigate }) => {
       <View style={styles.coursesContainer}>
         <Text style={styles.title}>Наши курсы</Text>
 
-        {courses.map((course) => (
-          <TouchableOpacity
-            key={course.id}
-            style={[
-              styles.courseCard,
-              { backgroundColor: course.background },
-            ]}
-            onPress={() =>
-              navigation.navigate('CourseDetails', { course })
-            }
-            activeOpacity={1}
-          >
-            <Animated.View style={animatedStyle}>
-              <View style={styles.cardContent}>
-                <Text
-                  style={[styles.courseTitle, { color: course.textColor }]}
-                >
-                  {course.title}
-                </Text>
-                <Image
-                  source={images[course.imageKey]}
-                  style={styles.courseLogo}
-                />
-              </View>
-            </Animated.View>
-          </TouchableOpacity>
-        ))}
+        {courses.map((course) => {
+          const isEnrolled = userCourses.some(
+            (userCourse) => userCourse.title === course.title
+          );
+
+          return (
+            <TouchableOpacity
+              key={course.id}
+              style={[
+                styles.courseCard,
+                { backgroundColor: course.background },
+                isEnrolled && styles.grayCard,
+              ]}
+              onPress={() =>
+                isEnrolled
+                  ? null
+                  : navigation.navigate('CourseDetails', { course })
+              }
+              activeOpacity={isEnrolled ? 1 : 0.6}
+            >
+              <Animated.View style={animatedStyle}>
+                <View style={styles.cardContent}>
+                  <View style={styles.textContainer}>
+                    <Text
+                      style={[
+                        styles.courseTitle,
+                        {
+                          color: isEnrolled ? '#FFF' : course.textColor,
+                        },
+                      ]}
+                    >
+                      {course.title}
+                    </Text>
+                    {isEnrolled && (
+                      <Text style={styles.enrolledText}>
+                        Вы уже записаны
+                      </Text>
+                    )}
+                  </View>
+
+                  {!isEnrolled && (
+                    <Image
+                      source={images[course.imageKey]}
+                      style={{
+                        width: 42,
+                        height: 42,
+                      }}
+                    />
+                  )}
+                </View>
+              </Animated.View>
+            </TouchableOpacity>
+          );
+        })}
       </View>
 
       {isOpen && <View style={styles.overlay} />}
@@ -106,6 +151,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  textContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
   courseLogo: {
     width: 42,
     height: 42,
@@ -114,6 +163,15 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontSize: 20,
     fontFamily: 'Comfortaa-Medium',
+  },
+  enrolledText: {
+    fontSize: 14,
+    fontFamily: 'Comfortaa-Medium',
+    color: '#fff',
+    marginTop: 5,
+  },
+  grayCard: {
+    opacity: 0.6,
   },
   overlay: {
     position: 'absolute',

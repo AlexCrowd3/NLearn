@@ -7,8 +7,9 @@ import {
   Animated,
   Image,
   ScrollView,
-  Dimensions
+  Dimensions,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import images from '../assets/images';
 import { useNavigation } from '@react-navigation/native';
@@ -17,7 +18,7 @@ const { height } = Dimensions.get('window');
 
 const CourseDetailsScreen = ({ route }) => {
   const navigation = useNavigation();
-  const { course } = route.params; 
+  const { course } = route.params;
   const [expandedModules, setExpandedModules] = useState({});
 
   const toggleModule = (moduleId) => {
@@ -27,12 +28,47 @@ const CourseDetailsScreen = ({ route }) => {
     }));
   };
 
+  // Функция для добавления курса пользователю
+  const handleStartLearning = async () => {
+    try {
+      const userDataString = await AsyncStorage.getItem('userData');
+      const userData = JSON.parse(userDataString);
+
+      // Проверяем, есть ли такой курс уже в списке
+      const alreadyEnrolled = userData.courses.some(
+        (c) => c.title === course.title
+      );
+
+      if (!alreadyEnrolled) {
+        // Добавляем курс
+        userData.courses.push({
+          title: course.title,
+          section: 0, // начальный раздел
+          question: 0, // начальный вопрос
+        });
+
+        // Сохраняем обновлённые данные
+        await AsyncStorage.setItem('userData', JSON.stringify(userData));
+      }
+
+      // Перейти к обучению
+      navigation.navigate('Learning', { course, section: 0, question: 0 });
+    } catch (e) {
+      console.log('Ошибка при записи на курс:', e);
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* Заголовок курса */}
       <View style={[styles.header, { backgroundColor: course.background }]}>
-        <TouchableOpacity style={[style=styles.buttonExit, { backgroundColor: course.textColor}]} onPress={() => navigation.navigate('Courses')}>
-          <Text style={[styles.buttonExitText, {color: course.background}]}>Назад</Text>
+        <TouchableOpacity
+          style={[styles.buttonExit, { backgroundColor: course.textColor }]}
+          onPress={() => navigation.navigate('Courses')}
+        >
+          <Text style={[styles.buttonExitText, { color: course.background }]}>
+            Назад
+          </Text>
         </TouchableOpacity>
         <View style={styles.headerCourse}>
           <Text style={[styles.headerTitle, { color: course.textColor }]}>
@@ -46,7 +82,7 @@ const CourseDetailsScreen = ({ route }) => {
       </View>
 
       {/* Список модулей */}
-      <ScrollView contentContainerStyle={styles.modulesContainer} style={{ maxHeight: height * 0.75, paddingBottom: 70, }}>
+      <ScrollView contentContainerStyle={styles.modulesContainer} style={{ maxHeight: height * 0.75, paddingBottom: 70 }}>
         {course.modules.map((module, index) => (
           <View key={module.title} style={styles.module}>
             <TouchableOpacity
@@ -54,7 +90,7 @@ const CourseDetailsScreen = ({ route }) => {
               onPress={() => toggleModule(module.title)}
             >
               <View style={[styles.moduleNumberContainer, { backgroundColor: course.background }]}>
-                <Text style={[styles.moduleNumber, {color: course.textColor}]}>{index + 1}</Text>
+                <Text style={[styles.moduleNumber, { color: course.textColor }]}>{index + 1}</Text>
               </View>
               <Text style={styles.moduleTitle}>{module.title}</Text>
               <Animated.Image
@@ -90,8 +126,13 @@ const CourseDetailsScreen = ({ route }) => {
 
       {/* Кнопка "Начать обучение" */}
       <View style={styles.footer}>
-        <TouchableOpacity style={[styles.startButton, { backgroundColor: course.background }]}>
-          <Text style={[styles.startButtonText, { color: course.textColor }]}>Начать обучение</Text>
+        <TouchableOpacity
+          style={[styles.startButton, { backgroundColor: course.background }]}
+          onPress={handleStartLearning}
+        >
+          <Text style={[styles.startButtonText, { color: course.textColor }]}>
+            Начать обучение
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

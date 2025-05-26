@@ -44,7 +44,7 @@ const LearningScreen = () => {
           {
             method: 'POST',
             headers: {
-              'Authorization': 'Bearer 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',
+              'Authorization': 'Bearer test',
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({

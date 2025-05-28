@@ -4,10 +4,12 @@ import { useNavigation } from '@react-navigation/native';
 import Header from '../components/Header';
 import SideMenu from '../components/SideMenu';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import courses from '../data/courseData';
+import images from '../assets/images';
 
 const ProfileScreen = ({ onNavigate }) => {
   const [userData, setUserData] = useState(null);
-  
+  const [userCourses, setUserCourses] = useState([]);
   const navigation = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -18,7 +20,9 @@ const ProfileScreen = ({ onNavigate }) => {
       try {
         const data = await AsyncStorage.getItem('userData');
         if (data) {
-          setUserData(JSON.parse(data));
+          const parsedData = JSON.parse(data);
+          setUserData(parsedData);
+          setUserCourses(parsedData.courses || []);
         }
       } catch (error) {
         console.error('Ошибка загрузки данных:', error);
@@ -73,25 +77,27 @@ const ProfileScreen = ({ onNavigate }) => {
 
       <Text style={styles.TitleCourses}>Мои курсы</Text>
 
-      <View style={styles.CoursesContainer}>
-        <Text  style={styles.CoursesContainerText}>У вас пока что нет активных курсов</Text>
-      </View>
-
-      <Animated.View style={[animatedStyle, styles.buttonCoursesWrapper]}>
-        <TouchableOpacity
-          style={styles.buttonCourses}
-          onPressIn={onPressIn}
-          onPressOut={onPressOut}
-          onPress={() => navigation.navigate('Courses')} 
-          activeOpacity={1}
-        >
-          <Text style={styles.buttonCoursesText}>Выбрать курс</Text>
-          <Image
-            source={require('../assets/book_open_icon.png')}
-            style={styles.buttonCoursesBookLogo}
-          />
-        </TouchableOpacity>
-      </Animated.View>
+      {userCourses.length > 0 ? (
+        userCourses.map((course, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[styles.courseCard, { backgroundColor: course.background }]}
+            onPress={() => navigation.navigate('CourseDetails', { course })}
+          >
+            <View style={styles.cardContent}>
+              <View style={styles.textContainer}>
+                <Text style={[styles.courseTitle, { color: course.textColor }]}>
+                  {course.title}
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        ))
+      ) : (
+        <Text style={styles.CoursesContainerText}>
+          У вас пока что нет активных курсов
+        </Text>
+      )}
 
       {/* Слой затемнения */}
         {isOpen && (
@@ -254,6 +260,26 @@ const styles = StyleSheet.create({
   buttonCoursesBookLogo: {
     height: 33,
     width: 33,
+  },
+  courseCard: {
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginBottom: 15,
+    marginHorizontal: 30,
+  },
+  cardContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  textContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  courseTitle: {
+    fontSize: 18,
+    fontFamily: 'Comfortaa-Medium',
   },
   overlay: {
     position: 'absolute',

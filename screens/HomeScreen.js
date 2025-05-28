@@ -11,23 +11,82 @@ import { useNavigation } from '@react-navigation/native';
 import Header from '../components/Header';
 import SideMenu from '../components/SideMenu';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import courses from '../data/courseData';
+import images from '../assets/images';
 
 const HomeScreen = () => {
-  // Для тестирования
-  /*useEffect(() => {
-    const resetData = async () => {
-      await AsyncStorage.removeItem('userData');
-      console.log('Данные пользователя удалены');
-    };
-
-    resetData();
-  }, []);*/
-
   const navigation = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
-
+  const [userData, setUserData] = useState(null);
+  const [lastCourse, setLastCourse] = useState(null);
+  const [progress, setProgress] = useState('0%');
   const scaleValue = useRef(new Animated.Value(1)).current;
   
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const data = await AsyncStorage.getItem('userData');
+        if (data) {
+          const parsedData = JSON.parse(data);
+          setUserData(parsedData);
+
+          if (parsedData.courses && parsedData.courses.length > 0) {
+            // Находим последний курс с наибольшим прогрессом
+            const lastCourseWithProgress = parsedData.courses.reduce((latest, course) => {
+              return (!latest || course.progress > latest.progress) ? course : latest;
+            }, null);
+
+            if (lastCourseWithProgress) {
+              // Находим полные данные курса
+              const courseDetails = courses.find(c => c.title === lastCourseWithProgress.title);
+
+              if (courseDetails) {
+                setLastCourse(courseDetails);
+                
+                // Рассчитываем прогресс для отображения
+                const progressValue = calculateCourseProgress(
+                  courseDetails,
+                  lastCourseWithProgress.section || 0,
+                  lastCourseWithProgress.question || 0
+                );
+                
+                setProgress(`${Math.round(progressValue * 100)}%`);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Ошибка при загрузке данных:', error);
+      }
+    };
+
+    loadUserData();
+  }, []);
+
+  // Функция для расчета прогресса курса (аналогичная из MyTrainingScreen)
+  const calculateCourseProgress = (course, section, question) => {
+    const totalTopics = course.modules.reduce(
+      (total, module) => total + module.topics.length,
+      0
+    );
+    
+    if (totalTopics === 0) return 0; // Защита от деления на ноль
+    
+    let completedTopics = 0;
+    
+    // Пройденные модули
+    for (let i = 0; i < section; i++) {
+      completedTopics += course.modules[i].topics.length;
+    }
+    
+    // Текущий модуль
+    if (section < course.modules.length) {
+      completedTopics += Math.min(question, course.modules[section].topics.length);
+    }
+    
+    return completedTopics / totalTopics;
+  };
+
   const onPressIn = () => {
     Animated.spring(scaleValue, {
       toValue: 0.95,
@@ -51,18 +110,38 @@ const HomeScreen = () => {
 
       <View style={styles.info}>
         <Text style={styles.text_info}>Ваш последний курс</Text>
-        <View style={styles.info_block}>
-          <Text style={styles.textPy}>Python разработка</Text>
-          <Image 
-            source={require('../assets/python_logo.png')}
-            style={styles.pythonLogoMax}
-          />
-        </View>
-        <View style={styles.progressBar}>
-          <View style={styles.progressFill}>
-            <Text style={styles.progress_text}>40%</Text>
-          </View>
-        </View>
+
+        {lastCourse ? (
+          <>
+            <View style={styles.info_block}>
+              <Text style={[styles.textPy, { color: lastCourse.background }]}>
+                {lastCourse.title}
+              </Text>
+              <Image
+                source={images[lastCourse.imageKey]}
+                style={styles.pythonLogoMax}
+              />
+            </View>
+
+            <View style={styles.progressBar}>
+              <View
+                style={[
+                  styles.progressFill,
+                  {
+                    width: progress,
+                    backgroundColor: lastCourse.background,
+                  },
+                ]}
+              >
+                <Text style={styles.progress_text}>{progress}</Text>
+              </View>
+            </View>
+          </>
+        ) : (
+          <Text style={{ color: '#888', fontFamily: 'Comfortaa-Medium' }}>
+            Нет активных курсов
+          </Text>
+        )}
       </View>
       <Text style={styles.Title1}>Самый популярный курс</Text>
       <Animated.View style={animatedStyle}>
@@ -139,20 +218,18 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: '#303030',
     borderRadius: 10,
+    overflow: 'hidden',
   },
   progressFill: {
-    width: '40%',
-    height: 40,
-    backgroundColor: '#3C98E4',
+    height: '100%',
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
   progress_text: {
-    width: 'auto',
     fontFamily: 'Comfortaa-Medium',
     color: '#FFFFFF',
-    fontSize: 20,
+    fontSize: 16,
   },
   Title1: {
     width: 'auto',
@@ -188,9 +265,9 @@ const styles = StyleSheet.create({
     height: 72,
   },
   textPy: {
-    color: '#3C98E4',
     fontSize: 32,
     fontFamily: 'Comfortaa-Medium',
+    maxWidth: '70%',
   },
   button: {
     marginTop: 25,

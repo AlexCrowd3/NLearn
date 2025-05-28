@@ -57,6 +57,11 @@ const MyTrainingScreen = ({ onNavigate }) => {
   // Функция для подсчёта общего количества пройденных вопросов
   const getTotalCompletedQuestions = (course, userSection, userQuestion) => {
     let total = 0;
+    
+    // Проверка на существование значений
+    if (typeof userSection !== 'number' || typeof userQuestion !== 'number') {
+      return 0;
+    }
 
     for (let i = 0; i < course.modules.length; i++) {
       const module = course.modules[i];
@@ -67,7 +72,9 @@ const MyTrainingScreen = ({ onNavigate }) => {
         total += questionsInModule;
       } else if (i === userSection) {
         // Текущая глава частично пройдена
-        total += userQuestion + 1; // Добавляем +1, так как question начинается с 0
+        // Используем Math.max для защиты от отрицательных значений
+        const completedInCurrent = Math.max(0, userQuestion + 1);
+        total += Math.min(completedInCurrent, questionsInModule);
       }
     }
 
@@ -87,11 +94,15 @@ const MyTrainingScreen = ({ onNavigate }) => {
 
           if (!course) return null; // Если курс не найден, пропускаем
 
+          // Устанавливаем значения по умолчанию
+          const userSection = userCourse.section || 0;
+          const userQuestion = userCourse.question || 0;
+
           // Рассчитываем общее количество пройденных вопросов
           const completedQuestions = getTotalCompletedQuestions(
             course,
-            userCourse.section,
-            userCourse.question
+            userSection,
+            userQuestion
           );
 
           // Рассчитываем общий прогресс
@@ -99,8 +110,10 @@ const MyTrainingScreen = ({ onNavigate }) => {
             (total, module) => total + module.topics.length,
             0
           );
+          
+          // Защита от деления на ноль
           const progress = totalQuestions > 0
-            ? (completedQuestions / totalQuestions) * 100
+            ? Math.round((completedQuestions / totalQuestions) * 100)
             : 0;
 
           return (
@@ -113,8 +126,8 @@ const MyTrainingScreen = ({ onNavigate }) => {
               onPress={() =>
                 navigation.navigate('Learning', {
                   course,
-                  section: userCourse.section,
-                  question: userCourse.question,
+                  section: userSection,
+                  question: userQuestion,
                 })
               }
               activeOpacity={0.6}
@@ -141,7 +154,7 @@ const MyTrainingScreen = ({ onNavigate }) => {
                       />
                     </View>
                     <Text style={[styles.progressText, {color: course.textColor}]}>
-                      {`${Math.round(progress)}%`}
+                      {`${progress}%`}
                     </Text>
                   </View>
                 </View>

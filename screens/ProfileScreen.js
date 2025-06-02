@@ -10,7 +10,7 @@ import images from '../assets/images';
 const ProfileScreen = ({ onNavigate }) => {
   const [userData, setUserData] = useState(null);
   const [userCourses, setUserCourses] = useState([]);
-  const [overallProgress, setOverallProgress] = useState(0); // Состояние для общего прогресса
+  const [overallProgress, setOverallProgress] = useState(0);
   const navigation = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -25,7 +25,6 @@ const ProfileScreen = ({ onNavigate }) => {
           setUserData(parsedData);
           setUserCourses(parsedData.courses || []);
           
-          // Рассчитываем общий прогресс
           calculateOverallProgress(parsedData.courses || []);
         }
       } catch (error) {
@@ -36,7 +35,6 @@ const ProfileScreen = ({ onNavigate }) => {
     loadUserData();
   }, []);
 
-  // Функция для правильного склонения слова "курс"
   const getCourseWord = (count) => {
     if (count === 0) return 'Нет курсов';
     if (count === 1) return '1 курс';
@@ -44,7 +42,6 @@ const ProfileScreen = ({ onNavigate }) => {
     return `${count} курсов`;
   };
   
-  // Функция для расчета общего прогресса
   const calculateOverallProgress = (userCourses) => {
     if (!userCourses || userCourses.length === 0) {
       setOverallProgress(0);
@@ -57,15 +54,13 @@ const ProfileScreen = ({ onNavigate }) => {
     userCourses.forEach(userCourse => {
       const course = courses.find(c => c.title === userCourse.title);
       if (course) {
-        // Рассчитываем количество тем в курсе
         const courseTopics = course.modules.reduce(
           (total, module) => total + module.topics.length,
           0
         );
         
         totalTopics += courseTopics;
-        
-        // Рассчитываем пройденные темы
+
         const completedTopics = calculateCompletedTopics(
           course,
           userCourse.section || 0,
@@ -76,7 +71,6 @@ const ProfileScreen = ({ onNavigate }) => {
       }
     });
 
-    // Рассчитываем общий процент
     const progress = totalTopics > 0 
       ? Math.round((totalCompletedTopics / totalTopics) * 100)
       : 0;
@@ -84,16 +78,13 @@ const ProfileScreen = ({ onNavigate }) => {
     setOverallProgress(progress);
   };
 
-  // Функция для расчета пройденных тем в курсе
   const calculateCompletedTopics = (course, section, question) => {
     let completedTopics = 0;
-    
-    // Пройденные модули
+
     for (let i = 0; i < section; i++) {
       completedTopics += course.modules[i].topics.length;
     }
-    
-    // Текущий модуль
+
     if (section < course.modules.length) {
       completedTopics += Math.min(question, course.modules[section].topics.length);
     }
@@ -374,7 +365,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#8E8E93',
   },
    grayCoursesBackground: {
-    backgroundColor: '#8E8E93', // Серый цвет для отсутствия курсов
+    backgroundColor: '#8E8E93', 
   },
   overlay: {
     position: 'absolute',

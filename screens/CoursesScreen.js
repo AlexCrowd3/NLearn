@@ -21,7 +21,6 @@ const CoursesScreen = ({ onNavigate }) => {
   const [userCourses, setUserCourses] = useState([]);
   const scaleValue = useRef(new Animated.Value(1)).current;
 
-  // Загрузка данных пользователя
   useEffect(() => {
     const loadUserData = async () => {
       try {

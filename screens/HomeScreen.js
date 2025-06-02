@@ -64,23 +64,20 @@ const HomeScreen = () => {
     loadUserData();
   }, []);
 
-  // Функция для расчета прогресса курса (аналогичная из MyTrainingScreen)
   const calculateCourseProgress = (course, section, question) => {
     const totalTopics = course.modules.reduce(
       (total, module) => total + module.topics.length,
       0
     );
     
-    if (totalTopics === 0) return 0; // Защита от деления на ноль
+    if (totalTopics === 0) return 0;
     
     let completedTopics = 0;
     
-    // Пройденные модули
     for (let i = 0; i < section; i++) {
       completedTopics += course.modules[i].topics.length;
     }
     
-    // Текущий модуль
     if (section < course.modules.length) {
       completedTopics += Math.min(question, course.modules[section].topics.length);
     }

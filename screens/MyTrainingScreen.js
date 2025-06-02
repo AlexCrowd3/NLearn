@@ -21,7 +21,6 @@ const MyTrainingScreen = ({ onNavigate }) => {
   const [userCourses, setUserCourses] = useState([]);
   const scaleValue = useRef(new Animated.Value(1)).current;
 
-  // Загрузка данных пользователя
   useEffect(() => {
     const loadUserData = async () => {
       try {
@@ -54,11 +53,9 @@ const MyTrainingScreen = ({ onNavigate }) => {
 
   const animatedStyle = { transform: [{ scale: scaleValue }] };
 
-  // Функция для подсчёта общего количества пройденных вопросов
   const getTotalCompletedQuestions = (course, userSection, userQuestion) => {
     let total = 0;
     
-    // Проверка на существование значений
     if (typeof userSection !== 'number' || typeof userQuestion !== 'number') {
       return 0;
     }
@@ -68,11 +65,8 @@ const MyTrainingScreen = ({ onNavigate }) => {
       const questionsInModule = module.topics.length;
 
       if (i < userSection) {
-        // Глава полностью пройдена
         total += questionsInModule;
       } else if (i === userSection) {
-        // Текущая глава частично пройдена
-        // Используем Math.max для защиты от отрицательных значений
         const completedInCurrent = Math.max(0, userQuestion + 1);
         total += Math.min(completedInCurrent, questionsInModule);
       }
@@ -92,26 +86,22 @@ const MyTrainingScreen = ({ onNavigate }) => {
         {userCourses.map((userCourse) => {
           const course = courses.find((c) => c.title === userCourse.title);
 
-          if (!course) return null; // Если курс не найден, пропускаем
+          if (!course) return null; 
 
-          // Устанавливаем значения по умолчанию
           const userSection = userCourse.section || 0;
           const userQuestion = userCourse.question || 0;
 
-          // Рассчитываем общее количество пройденных вопросов
           const completedQuestions = getTotalCompletedQuestions(
             course,
             userSection,
             userQuestion
           );
 
-          // Рассчитываем общий прогресс
           const totalQuestions = course.modules.reduce(
             (total, module) => total + module.topics.length,
             0
           );
-          
-          // Защита от деления на ноль
+
           const progress = totalQuestions > 0
             ? Math.round((completedQuestions / totalQuestions) * 100)
             : 0;

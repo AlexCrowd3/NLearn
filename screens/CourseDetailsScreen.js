@@ -28,30 +28,25 @@ const CourseDetailsScreen = ({ route }) => {
     }));
   };
 
-  // Функция для добавления курса пользователю
   const handleStartLearning = async () => {
     try {
       const userDataString = await AsyncStorage.getItem('userData');
       const userData = JSON.parse(userDataString);
 
-      // Проверяем, есть ли такой курс уже в списке
       const alreadyEnrolled = userData.courses.some(
         (c) => c.title === course.title
       );
 
       if (!alreadyEnrolled) {
-        // Добавляем курс
         userData.courses.push({
           title: course.title,
-          section: 0, // начальный раздел
-          question: 0, // начальный вопрос
+          section: 0, 
+          question: 0, 
         });
 
-        // Сохраняем обновлённые данные
         await AsyncStorage.setItem('userData', JSON.stringify(userData));
       }
 
-      // Перейти к обучению
       navigation.navigate('Learning', { course, section: 0, question: 0 });
     } catch (e) {
       console.log('Ошибка при записи на курс:', e);
@@ -60,7 +55,6 @@ const CourseDetailsScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      {/* Заголовок курса */}
       <View style={[styles.header, { backgroundColor: course.background }]}>
         <TouchableOpacity
           style={[styles.buttonExit, { backgroundColor: course.textColor }]}
@@ -110,7 +104,6 @@ const CourseDetailsScreen = ({ route }) => {
               />
             </TouchableOpacity>
 
-            {/* Темы внутри модуля */}
             {expandedModules[module.title] && (
               <View style={styles.moduleContent}>
                 {module.topics.map((topic, i) => (
@@ -124,7 +117,6 @@ const CourseDetailsScreen = ({ route }) => {
         ))}
       </ScrollView>
 
-      {/* Кнопка "Начать обучение" */}
       <View style={styles.footer}>
         <TouchableOpacity
           style={[styles.startButton, { backgroundColor: course.background }]}

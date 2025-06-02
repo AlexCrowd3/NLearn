@@ -36,7 +36,6 @@ const RegistrationScreen = ({ navigation }) => {
       isValid = false;
     }
 
-    // Проверка email
     if (!email.trim()) {
       newErrors.email = 'Поле "Email" не может быть пустым';
       isValid = false;
@@ -74,7 +73,6 @@ const RegistrationScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Добро пожаловать!</Text>
 
-      {/* Имя */}
       <View>
         <TextInput
           placeholder="Ваше имя"
@@ -89,7 +87,6 @@ const RegistrationScreen = ({ navigation }) => {
         {errors.name ? <Text style={styles.error}>{errors.name}</Text> : null}
       </View>
 
-      {/* Фамилия */}
       <View>
         <TextInput
           placeholder="Ваша фамилия"
@@ -104,7 +101,6 @@ const RegistrationScreen = ({ navigation }) => {
         {errors.lastname ? <Text style={styles.error}>{errors.lastname}</Text> : null}
       </View>
 
-      {/* Телефон */}
       <View>
         <TextInput
           placeholder="Ваш номер телефона"
@@ -120,7 +116,6 @@ const RegistrationScreen = ({ navigation }) => {
         {errors.telephone_number ? <Text style={styles.error}>{errors.telephone_number}</Text> : null}
       </View>
 
-      {/* Email */}
       <View>
         <TextInput
           placeholder="Ваш Email"
@@ -136,7 +131,6 @@ const RegistrationScreen = ({ navigation }) => {
         {errors.email ? <Text style={styles.error}>{errors.email}</Text> : null}
       </View>
 
-      {/* Пароль */}
       <View>
         <TextInput
           placeholder="Пароль..."

@@ -41,10 +41,8 @@ const AppNavigator = () => {
       screenOptions={{ headerShown: false }}
       initialRouteName={initialRoute}
     >
-      {/* Регистрационный экран */}
       <Stack.Screen name="Registration" component={RegistrationScreen} />
 
-      {/* Основные экраны */}
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Courses" component={CoursesScreen} />

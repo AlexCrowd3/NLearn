@@ -22,28 +22,29 @@ const HomeScreen = () => {
   const [progress, setProgress] = useState('0%');
   const scaleValue = useRef(new Animated.Value(1)).current;
   
+
   useEffect(() => {
     const loadUserData = async () => {
       try {
+        // await AsyncStorage.clear();
+        // console.log('Локальное хранилище очищено');
+
         const data = await AsyncStorage.getItem('userData');
         if (data) {
           const parsedData = JSON.parse(data);
           setUserData(parsedData);
 
           if (parsedData.courses && parsedData.courses.length > 0) {
-            // Находим последний курс с наибольшим прогрессом
             const lastCourseWithProgress = parsedData.courses.reduce((latest, course) => {
               return (!latest || course.progress > latest.progress) ? course : latest;
             }, null);
 
             if (lastCourseWithProgress) {
-              // Находим полные данные курса
               const courseDetails = courses.find(c => c.title === lastCourseWithProgress.title);
 
               if (courseDetails) {
                 setLastCourse(courseDetails);
                 
-                // Рассчитываем прогресс для отображения
                 const progressValue = calculateCourseProgress(
                   courseDetails,
                   lastCourseWithProgress.section || 0,

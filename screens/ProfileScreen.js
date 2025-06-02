@@ -10,6 +10,7 @@ import images from '../assets/images';
 const ProfileScreen = ({ onNavigate }) => {
   const [userData, setUserData] = useState(null);
   const [userCourses, setUserCourses] = useState([]);
+  const [overallProgress, setOverallProgress] = useState(0); // Состояние для общего прогресса
   const navigation = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -23,6 +24,9 @@ const ProfileScreen = ({ onNavigate }) => {
           const parsedData = JSON.parse(data);
           setUserData(parsedData);
           setUserCourses(parsedData.courses || []);
+          
+          // Рассчитываем общий прогресс
+          calculateOverallProgress(parsedData.courses || []);
         }
       } catch (error) {
         console.error('Ошибка загрузки данных:', error);
@@ -31,7 +35,72 @@ const ProfileScreen = ({ onNavigate }) => {
 
     loadUserData();
   }, []);
+
+  // Функция для правильного склонения слова "курс"
+  const getCourseWord = (count) => {
+    if (count === 0) return 'Нет курсов';
+    if (count === 1) return '1 курс';
+    if (count >= 2 && count <= 4) return `${count} курса`;
+    return `${count} курсов`;
+  };
   
+  // Функция для расчета общего прогресса
+  const calculateOverallProgress = (userCourses) => {
+    if (!userCourses || userCourses.length === 0) {
+      setOverallProgress(0);
+      return;
+    }
+
+    let totalCompletedTopics = 0;
+    let totalTopics = 0;
+
+    userCourses.forEach(userCourse => {
+      const course = courses.find(c => c.title === userCourse.title);
+      if (course) {
+        // Рассчитываем количество тем в курсе
+        const courseTopics = course.modules.reduce(
+          (total, module) => total + module.topics.length,
+          0
+        );
+        
+        totalTopics += courseTopics;
+        
+        // Рассчитываем пройденные темы
+        const completedTopics = calculateCompletedTopics(
+          course,
+          userCourse.section || 0,
+          userCourse.question || 0
+        );
+        
+        totalCompletedTopics += completedTopics;
+      }
+    });
+
+    // Рассчитываем общий процент
+    const progress = totalTopics > 0 
+      ? Math.round((totalCompletedTopics / totalTopics) * 100)
+      : 0;
+      
+    setOverallProgress(progress);
+  };
+
+  // Функция для расчета пройденных тем в курсе
+  const calculateCompletedTopics = (course, section, question) => {
+    let completedTopics = 0;
+    
+    // Пройденные модули
+    for (let i = 0; i < section; i++) {
+      completedTopics += course.modules[i].topics.length;
+    }
+    
+    // Текущий модуль
+    if (section < course.modules.length) {
+      completedTopics += Math.min(question, course.modules[section].topics.length);
+    }
+    
+    return completedTopics;
+  };  
+
   const onPressIn = () => {
     Animated.spring(scaleValue, {
       toValue: 0.95,
@@ -63,16 +132,26 @@ const ProfileScreen = ({ onNavigate }) => {
           <Text style={styles.userInfo}>{userData?.email ? `${userData.email}` : ''}</Text>
         </View>
       </View>
-      <View style={styles.cupContainer}>
-        <Text style={styles.cupContainerText}>Золото</Text>
-        <Image source={require('../assets/cup_gold_icon.png')} style={styles.cupContainerImage} />
+      <View style={[
+        styles.answerContainer,
+        userCourses.length === 0 && styles.grayBackground,
+        overallProgress > 0 && overallProgress <= 30 && styles.redBackground,
+        overallProgress > 30 && overallProgress <= 65 && styles.orangeBackground,
+        overallProgress > 65 && styles.greenBackground
+      ]}>
+        <Text style={styles.answerContainerPersent}>
+          {userCourses.length === 0 
+            ? "Пока не открыто" 
+            : `${overallProgress}% Пройдено`}
+        </Text>
       </View>
-      <View style={styles.answerContainer}>
-        <Text style={styles.answerContainerPersent}>100%</Text>
-        <Text style={styles.answerContainerText}>Правильных ответов</Text>
-      </View>
-      <View style={styles.CountCoursesContainer}>
-        <Text style={styles.CountCoursesContainerText}>Нет курсов</Text>
+      <View style={[
+        styles.CountCoursesContainer,
+        userCourses.length === 0 && styles.grayCoursesBackground
+      ]}>
+        <Text style={styles.CountCoursesContainerText}>
+          {getCourseWord(userCourses.length)}
+        </Text>
       </View>
 
       <Text style={styles.TitleCourses}>Мои курсы</Text>
@@ -178,7 +257,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 10,
     backgroundColor: '#2FD842',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: '10%',
@@ -216,6 +295,7 @@ const styles = StyleSheet.create({
   TitleCourses: {
     marginTop: 30,
     marginLeft: 30,
+    marginBottom: 20,
     color: '#FFFFFF',
     fontSize: 24,
     fontFamily: 'Comfortaa-Bold',
@@ -280,6 +360,21 @@ const styles = StyleSheet.create({
   courseTitle: {
     fontSize: 18,
     fontFamily: 'Comfortaa-Medium',
+  },
+  redBackground: {
+    backgroundColor: '#FF3B30',
+  },
+  orangeBackground: {
+    backgroundColor: '#FF9500', 
+  },
+  greenBackground: {
+    backgroundColor: '#2FD842',
+  },
+  grayBackground: {
+    backgroundColor: '#8E8E93',
+  },
+   grayCoursesBackground: {
+    backgroundColor: '#8E8E93', // Серый цвет для отсутствия курсов
   },
   overlay: {
     position: 'absolute',
